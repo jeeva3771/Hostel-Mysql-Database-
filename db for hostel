@@ -12,7 +12,6 @@ create table block (
     deletedBy int
 );
 ALTER TABLE block ADD UNIQUE (blockCode);
-SELECT * FROM block;
 insert into block (blockCode,location,isActive) values ('A-Block','North',1);
 update block set isActive = 0 where blockId = 1;
 drop table block;
@@ -213,7 +212,7 @@ foreign key (deletedBy) references warden(wardenId);
 
 
 select * from block;
-select * from warden;
+blockselect * from warden;
 select * from warden where deletedAt is null;
 insert into warden (name,dob,username,password,createdBy) values ('RamKumar','1999-10-09','ram','ramram','1');
 select * from blockfloor;
@@ -228,6 +227,7 @@ insert into blockfloor(blockId,floorNumber,isActive,createdBy) values (1,22,1,6)
 update blockfloor set blockId = 2 where blockFloorId = 1;
 
 select * from blockfloor where blockfloorId = 1;
+update blockfloor set deletedAt = now(),deletedBy = 8 where blockfloorId = 8 and deletedAt is null
 
 update blockfloor set blockId=1 where blockFloorId = 1;
 
@@ -258,4 +258,27 @@ select count(*) as count from student where roomId = 1 and deletedAt is null;
 
 select * from room where roomId = 2000;
 
-alter table blockfloor MODIFY  blockCode unique
+update room set blockfloorId = 4 where roomId = 14 and deletedAt is null;
+
+alter table blockfloor MODIFY  blockCode unique;
+update room set deletedAt = now(),deletedBy = 6 where roomId = 16 and deletedAt is null;
+
+ALTER TABLE attendance
+ADD COLUMN updateAt int
+
+
+ALTER TABLE attendance
+RENAME COLUMN updateAt TO updatedAt;
+
+ALTER TABLE attendance
+ADD COLUMN updatedBy int
+
+alter table attendance
+add constraint fk_attendance_updatedAt
+foreign key (updatedAt) references warden(wardenId);
+
+alter table attendance
+add constraint fk_attendance_updatedBy
+foreign key (updatedBy) references warden(wardenId);
+
+select * from student where deletedAt is null
