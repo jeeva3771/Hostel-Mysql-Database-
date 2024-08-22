@@ -212,7 +212,7 @@ foreign key (deletedBy) references warden(wardenId);
 
 
 select * from block;
-blockselect * from warden;
+select * from warden;
 select * from warden where deletedAt is null;
 insert into warden (name,dob,username,password,createdBy) values ('RamKumar','1999-10-09','ram','ramram','1');
 select * from blockfloor;
@@ -264,13 +264,14 @@ alter table blockfloor MODIFY  blockCode unique;
 update room set deletedAt = now(),deletedBy = 6 where roomId = 16 and deletedAt is null;
 
 ALTER TABLE attendance
-ADD COLUMN updateAt int
+ADD COLUMN updateAt int;
 
 
 ALTER TABLE attendance
 RENAME COLUMN updateAt TO updatedAt;
 
 ALTER TABLE attendance
+
 ADD COLUMN updatedBy int
 
 alter table attendance
@@ -281,4 +282,48 @@ alter table attendance
 add constraint fk_attendance_updatedBy
 foreign key (updatedBy) references warden(wardenId);
 
-select * from student where deletedAt is null
+select * from student where deletedAt is null;
+
+
+ALTER TABLE room
+RENAME COLUMN isAc TO isAirConditioner;
+
+select * from course;
+ALTER TABLE course
+ADD COLUMN createdAt timestamp default current_timestamp AFTER courseName;
+
+ALTER TABLE course
+ADD COLUMN createdBy int AFTER createdAt;
+
+ALTER TABLE course
+ADD COLUMN updatedAt timestamp default current_timestamp on update current_timestamp AFTER createdBy;
+
+ALTER TABLE course
+ADD COLUMN updatedBy int AFTER updatedAt;
+
+ALTER TABLE course
+ADD COLUMN deletedAt timestamp AFTER updatedBy;
+
+ALTER TABLE course
+ADD COLUMN deletedBy int AFTER deletedAt;
+
+alter table course
+add constraint fk_course_createdBy
+foreign key (createdBy) references warden(wardenId);
+
+alter table course
+add constraint fk_course_updatedBy
+foreign key (updatedBy) references warden(wardenId);
+
+alter table course
+add constraint fk_course_deletedBy
+foreign key (deletedBy) references warden(wardenId);
+
+SELECT * FROM attendance;
+
+ALTER TABLE attendance
+DROP FOREIGN KEY fk_attendance_updatedAt;
+
+ALTER TABLE attendance
+MODIFY COLUMN updatedAt timestamp default current_timestamp on update current_timestamp;
+
