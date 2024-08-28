@@ -1,4 +1,7 @@
 create database hosteldatabase;
+
+SELECT * FROM student WHERE name = 'admin' /*' AND password = 'password' */
+
 create table block (
 	blockId int auto_increment primary key,
     blockCode varchar(255), 
@@ -14,7 +17,6 @@ create table block (
 ALTER TABLE block ADD UNIQUE (blockCode);
 insert into block (blockCode,location,isActive) values ('A-Block','North',1);
 update block set isActive = 0 where blockId = 1;
-drop table block;
 
 create table blockfloor (
 	blockFloorId int auto_increment primary key,
@@ -32,7 +34,6 @@ create table blockfloor (
 )
 
 select * from blockfloor;
-drop table blockfloor;
 
 create table room (
 	roomId int auto_increment primary key, 
@@ -52,7 +53,6 @@ create table room (
     constraint fk_room_blockId foreign key (blockId)
     references block(blockId)
 );
-drop table room;
 
 select * from room;
 
@@ -88,7 +88,6 @@ create table student (
     constraint fk_studentId_courseId foreign key (courseId)
     references course(courseId)
 );
-drop table student;
 
 select * from student;
 
@@ -113,7 +112,6 @@ create table attendance (
     constraint fk_attendance_wardenId foreign key (wardenId)
     references warden(wardenId)
 );
-drop table attendance;
 select * from attendance;
 
 create table warden (
@@ -129,7 +127,6 @@ create table warden (
 	deletedAt timestamp,
 	deletedBy int
 );
-drop table warden;
 select * from warden;
 alter table block
 add constraint fk_block_deletedBy
@@ -327,3 +324,22 @@ DROP FOREIGN KEY fk_attendance_updatedAt;
 ALTER TABLE attendance
 MODIFY COLUMN updatedAt timestamp default current_timestamp on update current_timestamp;
 
+insert into warden (name, dob, username, password) values('boopathi','2000-10-09','boop','boop00');
+SELECT * FROM warden;
+
+SELECT * FROM warden WHERE username = 0 AND password = "prem234"
+
+ALTER TABLE warden
+RENAME COLUMN username to emailId;
+
+ALTER TABLE warden
+ADD CONSTRAINT UC_warden_emailId UNIQUE (emailId);
+
+SELECT emailId, COUNT(*) 
+FROM warden 
+GROUP BY emailId 
+HAVING COUNT(*) > 1;
+
+SELECT * FROM hosteldatabase.attendance;
+select studentId from attendance where attendanceId = 2;
+select count(*) as count from attendance where studentId = 2
