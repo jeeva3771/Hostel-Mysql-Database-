@@ -335,6 +335,9 @@ RENAME COLUMN username to emailId;
 ALTER TABLE warden
 ADD CONSTRAINT UC_warden_emailId UNIQUE (emailId);
 
+ALTER TABLE course
+ADD CONSTRAINT UC_course_courseName UNIQUE (courseName);
+
 SELECT emailId, COUNT(*) 
 FROM warden 
 GROUP BY emailId 
@@ -343,3 +346,17 @@ HAVING COUNT(*) > 1;
 SELECT * FROM hosteldatabase.attendance;
 select studentId from attendance where attendanceId = 2;
 select count(*) as count from attendance where studentId = 2
+
+SELECT * FROM attendance WHERE studentId = 6 AND date >= "2024-01-01"  AND date <= "2024-08-11"
+SELECT * FROM attendance WHERE studentId = 6 AND date >= "8"  AND date <= "10"
+
+select * from attendance where MONTH(date) = 8 AND YEAR(date) = 2024 AND studentId = 6
+
+select * from attendance where date >= "2024-01-01"  AND date <= "2024-08-11" AND studentId = 6
+
+ALTER TABLE student
+ADD CONSTRAINT UC_student_phoneNumber UNIQUE (phoneNumber);
+
+ALTER TABLE student
+ADD CONSTRAINT UC_student_fatherNumber UNIQUE (fatherNumber);
+
