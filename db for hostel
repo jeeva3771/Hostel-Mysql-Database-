@@ -358,5 +358,236 @@ ALTER TABLE student
 ADD CONSTRAINT UC_student_phoneNumber UNIQUE (phoneNumber);
 
 ALTER TABLE student
+ADD CONSTRAINT UC_student_registerNumber UNIQUE (registerNumber);
+
+ALTER TABLE student
 ADD CONSTRAINT UC_student_fatherNumber UNIQUE (fatherNumber);
 
+ALTER TABLE attendance
+RENAME COLUMN date TO checkInDate;
+
+select c.*, w.name
+from course as c
+inner join warden as w on w.wardenId = c.createdBy
+
+select c.*, w.name
+from course as c
+inner join warden as w on w.wardenId = c.createdBy
+	
+    
+SELECT 
+    c.*,
+    w.name AS createdBy,
+    w2.name AS updatedBy,
+    DATE_FORMAT(c.createdAt, "%m/%d/%Y %T") AS createdAt,
+    DATE_FORMAT(c.updatedAt, "%m/%d/%Y %T") AS updatedAt,
+    c.createdBy,
+    c.updatedBy
+FROM 
+    course AS c
+INNER JOIN 
+    warden AS w ON w.wardenId = c.createdBy
+INNER JOIN 
+    warden AS w2 ON w2.wardenId = c.updatedBy;
+    
+SELECT 
+    c.*,
+    w.name AS createdBy,
+    w2.name AS updatedBy,
+    DATE_FORMAT(c.createdAt, "%m/%d/%Y %T") AS createdAt,
+    DATE_FORMAT(c.updatedAt, "%m/%d/%Y %T") AS updatedAt,
+    c.createdBy,
+    c.updatedBy,
+    (SELECT COUNT(*) FROM course) AS totalCourses
+FROM 
+    course AS c
+LEFT JOIN 
+    warden AS w ON w.wardenId = c.createdBy
+LEFT JOIN 
+    warden AS w2 ON w2.wardenId = c.updatedBy;
+
+SELECT 
+            c.*,
+            w.name AS created,
+            w2.name AS updated,
+            DATE_FORMAT(c.createdAt, "%d-%m-%Y %T") AS createdAt,
+            DATE_FORMAT(c.updatedAt, "%d-%m-%Y %T") AS updatedAt,
+            (SELECT COUNT(*) FROM course) AS totalCourses
+        FROM 
+            course AS c 
+        LEFT JOIN
+            warden AS w ON w.wardenId = c.createdBy
+        LEFT JOIN 
+            warden AS w2 ON w2.wardenId = c.updatedBy
+        WHERE 
+            c.deletedAt IS NULL
+        ORDER BY
+            c.courseName ASC limit 3
+            
+SELECT * FROM block;
+SELECT 
+	b.*,
+    w.name AS created,
+    w2.name AS updated,
+    DATE_FORMAT(b.createdAt, "%d-%m-%Y %T") AS createdAt,
+	DATE_FORMAT(b.updatedAt, "%d-%m-%Y %T") AS updatedAt,
+	(SELECT COUNT(*) FROM block) AS totalBlock
+    FROM block AS b
+    LEFT JOIN 
+       warden AS w ON w.wardenId = b.createdBy
+	LEFT JOIN 
+     warden AS w2 ON w2.wardenId = b.updatedBy
+    WHERE 
+      b.deletedAt 
+    IS NULL LIMIT 4 
+    
+select 
+	b.*,
+    bk.blockCode,
+    w.name AS created,
+    w2.name AS updated,
+    DATE_FORMAT(b.createdAt, "%d-%m-%Y %T") AS createdAt,
+	DATE_FORMAT(b.updatedAt, "%d-%m-%Y %T") AS updatedAt,
+    (SELECT COUNT(*) FROM blockfloor) AS totalBlockFloor
+    FROM blockfloor AS b
+    LEFT JOIN 
+	   block AS bk ON bk.blockId = b.blockId
+    LEFT JOIN 
+       warden AS w ON w.wardenId = b.createdBy
+	LEFT JOIN 
+     warden AS w2 ON w2.wardenId = b.updatedBy
+    WHERE 
+      b.deletedAt 
+    IS NULL 
+    
+select * from room
+
+select 
+	r.*,
+    b.floorNumber,
+    bk.blockCode,
+    w.name AS created,
+    w2.name AS updated,
+    DATE_FORMAT(r.createdAt, "%d-%m-%Y %T") AS createdAt,
+	DATE_FORMAT(r.updatedAt, "%d-%m-%Y %T") AS updatedAt,
+    (SELECT COUNT(*) FROM room) AS totalRoom
+    FROM room AS r
+    LEFT JOIN 
+	   blockfloor AS b ON b.blockFloorId = r.blockFloorId
+    LEFT JOIN 
+	   block AS bk ON bk.blockId = r.blockId
+    LEFT JOIN 
+       warden AS w ON w.wardenId = r.createdBy
+	LEFT JOIN 
+     warden AS w2 ON w2.wardenId = b.updatedBy
+    WHERE 
+      r.deletedAt IS NULL 
+	ORDER BY 
+	  r.blockId ASC LIMIT 10 OFFSET 0
+    
+select 
+	w.*,
+    ww.name AS created,
+    ww2.name AS updated,
+    DATE_FORMAT(w.dob, "%d-%m-%Y") AS dob,
+    DATE_FORMAT(w.createdAt, "%d-%m-%Y %T") AS created,
+	DATE_FORMAT(w.updatedAt, "%d-%m-%Y %T") AS updated,
+    (SELECT COUNT(*) FROM warden) AS totalWardens
+    FROM warden AS w
+    LEFT JOIN
+       warden AS ww ON ww.wardenId = w.createdBy
+	LEFT JOIN 
+     warden AS ww2 ON ww2.wardenId = w.updatedBy
+    WHERE 
+      w.deletedAt IS NULL 
+	ORDER BY 
+	  w.name ASC LIMIT 10 OFFSET 0
+      
+select * from student;
+
+select 
+	s.*,
+    bk.blockCode AS blockCode,
+    b.floorNumber AS floorNumber,
+    r.roomNumber AS roomNumber,
+    c.courseName,
+    w.name AS created,
+    w2.name AS updated,
+    DATE_FORMAT(s.dob, "%Y-%m-%d") AS dob,
+    DATE_FORMAT(s.joinedDate, "%Y-%m-%d") AS joinedDate,
+    DATE_FORMAT(s.createdAt, "%Y-%m-%d %T") AS createdAt,
+	DATE_FORMAT(s.updatedAt, "%Y-%m-%d %T") AS updatedAt,
+    (SELECT COUNT(*) FROM student) AS totalStudents
+    FROM student AS s
+    LEFT JOIN 
+	   block AS bk ON bk.blockId = s.blockId
+	LEFT JOIN 
+	   blockfloor AS b ON b.blockFloorId = s.blockFloorId
+	LEFT JOIN 
+	   room AS r ON r.roomId = s.roomId
+	LEFT JOIN 
+	   course AS c ON c.courseId = s.courseId
+    LEFT JOIN 
+       warden AS w ON w.wardenId = s.createdBy
+	LEFT JOIN 
+     warden AS w2 ON w2.wardenId = s.updatedBy
+    WHERE 
+      s.deletedAt IS NULL 
+	ORDER BY 
+	  s.blockId ASC LIMIT 10 OFFSET 0;
+    
+    select * from attendance;
+
+    
+    select 
+	a.*,
+    s.name,
+    r.roomNumber,
+    b.floorNumber,
+    bk.blockCode,
+    ww.name AS created,
+    ww2.name AS updated,
+    DATE_FORMAT(a.createdAt, "%Y-%m-%d %T") AS created,
+	DATE_FORMAT(a.updatedAt, "%Y-%m-%d %T") AS updated,
+    (SELECT COUNT(*) FROM attendance) AS totalAttendances
+    FROM attendance AS a
+    LEFT JOIN
+       student AS s ON s.studentId = a.studentId
+	LEFT JOIN 
+       room AS r ON r.roomId = s.roomId  
+    LEFT JOIN 
+       blockfloor AS b ON b.blockFloorId = s.blockFloorId 
+	LEFT JOIN 
+       block AS bk ON bk.blockId = s.blockId
+    LEFT JOIN
+       warden AS ww ON ww.wardenId = a.wardenId
+	LEFT JOIN 
+       warden AS ww2 ON ww2.wardenId = a.updatedBy
+	ORDER BY 
+	  a.studentId ASC 
+	LIMIT 10 OFFSET 0
+    
+    
+    SELECT 
+            c.*,
+            w.name AS created,
+            w2.name AS updated,
+            DATE_FORMAT(c.createdAt, "%Y-%m-%d %T") AS createdAt,
+            DATE_FORMAT(c.updatedAt, "%Y-%m-%d %T") AS updatedAt
+        FROM 
+            course AS c 
+        LEFT JOIN
+            warden AS w ON w.wardenId = c.createdBy
+        LEFT JOIN 
+            warden AS w2 ON w2.wardenId = c.updatedBy
+        WHERE 
+            c.deletedAt IS NULL
+        ORDER BY 
+            c.courseName ASC, c.createdAt ASC
+
+
+ALTER TABLE warden
+add COLUMN globalAdmin TINYINT(1) default 0;
+
+ALTER TABLE warden
+RENAME COLUMN globalAdmin to SuperAdmin;
