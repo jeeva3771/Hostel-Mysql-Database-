@@ -591,3 +591,6 @@ add COLUMN globalAdmin TINYINT(1) default 0;
 
 ALTER TABLE warden
 RENAME COLUMN globalAdmin to SuperAdmin;
+
+CREATE UNIQUE INDEX attendance_unq_studentId_checkInDate ON attendance(studentId, checkInDate);
+
