@@ -594,3 +594,8 @@ RENAME COLUMN globalAdmin to SuperAdmin;
 
 CREATE UNIQUE INDEX attendance_unq_studentId_checkInDate ON attendance(studentId, checkInDate);
 
+ALTER TABLE blockFloor 
+ADD CONSTRAINT unique_block_floor UNIQUE (blockId, floorNumber);
+
+ALTER TABLE room 
+ADD CONSTRAINT unique_room UNIQUE (blockId, blockFloorId, roomNumber);
